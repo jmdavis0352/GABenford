@@ -1,0 +1,69 @@
+---
+title: Setting output args via render functions
+runtime: shiny
+output: html_document
+---
+
+This interactive Rmd document makes use of the `outputArgs`
+argument now available to all Shiny `render` functions. To
+give an example, this allows you to set arguments to
+`imageOutput` through `renderImage`. This means that you
+don't have to create a `ui` object just to be able to brush
+over an image. Note that this only applies to snippets of
+Shiny code during an interactive Rmd (and not to embedded
+full apps -- the ones you need to call `shinyApp` to run).
+
+## Brushing over an image (and storing the data)
+
+```{r setup, echo=FALSE}
+library(datasets)
+
+sliderInput(label = 'foo', 'sample', min= 10, max= 500, value = 100)
+
+
+generateImage = function(x) {
+  outfile = tempfile(fileext = '.png')
+  png(outfile)
+  hist(x)
+  dev.off()
+  list(src = outfile)
+}
+```
+
+```{r image}
+renderImage({
+  generateImage(runif(input$sample))
+}, deleteFile = TRUE, 
+   outputArgs = list(brush = brushOpts(id = "plot_brush"),
+                     width = "1200px",
+                     height = "400px")
+)
+```
+
+
+
+Here is some of the brushing info sent to the server:
+(brush over the image to change the data)
+
+```{r brush info}
+renderText({ 
+  print(input$plot_brush)
+  brush = input$plot_brush
+  paste0("xmin: ", brush$xmin, "; ",
+         "xmax: ", brush$xmax, "; ",
+         "ymin: ", brush$ymin, "; ",
+         "ymax: ", brush$ymax)
+})
+```
+
+---
+
+### Resizing a plot
+
+```{r plot}
+renderPlot({ 
+  plot(cars) 
+}, outputArgs = list(width = "75%", 
+                     height = "250px")
+)
+```

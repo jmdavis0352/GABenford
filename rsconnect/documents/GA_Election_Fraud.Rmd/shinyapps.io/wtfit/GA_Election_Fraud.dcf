@@ -1,0 +1,12 @@
+name: GA_Election_Fraud
+title: GA_Election_Fraud
+username:
+account: wtfit
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3302929
+bundleId: 4024669
+url: https://wtfit.shinyapps.io/GA_Election_Fraud/
+when: 1608783583.45112
+asMultiple: FALSE
+asStatic: FALSE
